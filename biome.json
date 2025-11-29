@@ -17,9 +17,6 @@
       }
     }
   },
-  "files": {
-    "ignoreUnknown": false
-  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -54,5 +51,21 @@
       "trailingCommas": "none",
       "arrowParentheses": "asNeeded"
     }
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/build",
+      "!**/.next",
+      "!**/.contentlayer",
+      "!**/.turbo",
+      "!**/.nuxt",
+      "!**/.source",
+      "!**/.expo",
+      "!**/.cache",
+      "!**/.output",
+      "!**/.tmp"
+    ]
   }
 }
