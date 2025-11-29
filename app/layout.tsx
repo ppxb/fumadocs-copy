@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { baseUrl, createMetadata } from '@/lib/metadata'
 
 import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata = createMetadata({
 	title: {
@@ -35,7 +36,14 @@ export default function Layout({ children }: { children: ReactNode }) {
 			<body
 				className={`${GeistSans.variable} ${GeistMono.variable} bg-background font-sans relative`}
 			>
-				{children}
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="dark"
+					enableSystem
+					disableTransitionOnChange
+				>
+					{children}
+				</ThemeProvider>
 			</body>
 		</html>
 	)
