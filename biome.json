@@ -21,9 +21,9 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "semicolons": null,
-      "trailingCommas": "all",
-      "arrowParentheses": null
+      "semicolons": "asNeeded",
+      "trailingCommas": "none",
+      "arrowParentheses": "asNeeded"
     }
   },
   "assist": {
