@@ -1,10 +1,12 @@
+import { RootProvider } from 'fumadocs-ui/provider/next'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import type { ReactNode } from 'react'
+
+import { ThemeProvider } from '@/components/theme-provider'
 import { baseUrl, createMetadata } from '@/lib/metadata'
 
 import './globals.css'
-import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata = createMetadata({
 	title: {
@@ -42,6 +44,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 					enableSystem
 					disableTransitionOnChange
 				>
+					<RootProvider
+						theme={{ enableSystem: true, defaultTheme: 'dark' }}
+						search={{ enabled: true }}
+					>
+						{children}
+					</RootProvider>
 					{children}
 				</ThemeProvider>
 			</body>
