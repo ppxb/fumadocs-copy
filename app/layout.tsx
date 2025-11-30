@@ -3,6 +3,7 @@ import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import type { ReactNode } from 'react'
 
+import { AnchorScroll } from '@/components/anchor-scroll-fix'
 import { ThemeProvider } from '@/components/theme-provider'
 import { baseUrl, createMetadata } from '@/lib/metadata'
 
@@ -48,6 +49,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 						theme={{ enableSystem: true, defaultTheme: 'dark' }}
 						search={{ enabled: true }}
 					>
+						<AnchorScroll />
 						{children}
 					</RootProvider>
 					{children}
