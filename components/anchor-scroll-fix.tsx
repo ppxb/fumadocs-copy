@@ -12,14 +12,14 @@ export function AnchorScroll() {
 			const navHeight = parseInt(
 				getComputedStyle(root).getPropertyValue('--fd-nav-height') || '56'
 			)
-			const bannerHeihgt = parseInt(
+			const bannerHeight = parseInt(
 				getComputedStyle(root).getPropertyValue('--fd-banner-height') || '0'
 			)
 			const tocnavHeight = parseInt(
 				getComputedStyle(root).getPropertyValue('--fd-tocnav-height') || '0'
 			)
 
-			return navHeight + bannerHeihgt + tocnavHeight + 24
+			return navHeight + bannerHeight + tocnavHeight + 24
 		}
 
 		function smoothScrollToElement(element: HTMLElement) {
@@ -32,7 +32,7 @@ export function AnchorScroll() {
 
 			const elementRect = element.getBoundingClientRect()
 			const scrollOffset = calculateScrollOffset()
-			const targetPosition = window.pageYOffset + elementRect.top + scrollOffset
+			const targetPosition = window.pageYOffset + elementRect.top - scrollOffset
 
 			// Simple smooth scroll animation
 			const startPosition = window.pageYOffset
@@ -45,7 +45,7 @@ export function AnchorScroll() {
 				const progress = Math.min(elapsed / duration, 1)
 				const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
 				const currentPosition =
-					startPosition + distance + easeOutCubic(progress)
+					startPosition + distance * easeOutCubic(progress)
 
 				window.scrollTo(0, currentPosition)
 
