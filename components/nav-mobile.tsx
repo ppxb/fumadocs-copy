@@ -59,7 +59,7 @@ export function useNavbarMobile(): NavbarMobileContextProps {
 	return context
 }
 
-export const NavbarMobileBtn: React.FC = () => {
+export function NavbarMobileBtn() {
 	const { toggleNavbar } = useNavbarMobile()
 
 	return (
