@@ -14,8 +14,6 @@ import {
 import { cn } from '@/lib/utils'
 import { contents, examples } from './sidebar-content'
 
-// TODO: SIDEBAR CONTENT
-
 interface NavbarMobileContextProps {
 	isOpen: boolean
 	toggleNavbar: () => void

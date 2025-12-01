@@ -4,11 +4,14 @@ import { GeistSans } from 'geist/font/sans'
 import type { ReactNode } from 'react'
 
 import { AnchorScroll } from '@/components/anchor-scroll-fix'
+import { Navbar } from '@/components/nav-bar'
+import { NavbarProvider } from '@/components/nav-mobile'
 import { CustomSearchDialog } from '@/components/search-dialog'
 import { ThemeProvider } from '@/components/theme-provider'
+import { Toaster } from '@/components/ui/sonner'
 import { baseUrl, createMetadata } from '@/lib/metadata'
 
-import './globals.css'
+import './global.css'
 
 export const metadata = createMetadata({
 	title: {
@@ -38,7 +41,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 				/>
 			</head>
 			<body
-				className={`${GeistSans.variable} ${GeistMono.variable} bg-background font-sans relative`}
+				className={`${GeistSans.variable} ${GeistMono.variable} bg-background font-sans relative `}
 			>
 				<ThemeProvider
 					attribute="class"
@@ -47,7 +50,10 @@ export default function Layout({ children }: { children: ReactNode }) {
 					disableTransitionOnChange
 				>
 					<RootProvider
-						theme={{ enableSystem: true, defaultTheme: 'dark' }}
+						theme={{
+							enableSystem: true,
+							defaultTheme: 'dark'
+						}}
 						search={{
 							enabled: true,
 							SearchDialog: process.env.ORAMA_PRIVATE_API_KEY
@@ -56,7 +62,18 @@ export default function Layout({ children }: { children: ReactNode }) {
 						}}
 					>
 						<AnchorScroll />
-						{children}
+						<NavbarProvider>
+							<Navbar />
+							{children}
+							<Toaster
+								toastOptions={{
+									style: {
+										borderRadius: '0px',
+										fontSize: '11px'
+									}
+								}}
+							/>
+						</NavbarProvider>
 					</RootProvider>
 				</ThemeProvider>
 			</body>
