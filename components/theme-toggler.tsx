@@ -2,6 +2,7 @@
 
 import { useTheme } from 'next-themes'
 import type { ComponentProps } from 'react'
+
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
@@ -155,7 +156,7 @@ export function ThemeToggle(props: ComponentProps<typeof Button>) {
 						width="1em"
 						height="1em"
 						viewBox="0 0 24 24"
-						className="hidden dark:block size-6"
+						className="hidden dark:block size-5"
 					>
 						<path
 							fill="currentColor"

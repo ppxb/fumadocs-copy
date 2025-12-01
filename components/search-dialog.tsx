@@ -2,6 +2,7 @@
 
 import { OramaClient } from '@oramacloud/client'
 import { useDocsSearch } from 'fumadocs-core/search/client'
+import type { SharedProps } from 'fumadocs-ui/components/dialog/search'
 import {
 	SearchDialog,
 	SearchDialogClose,
@@ -11,8 +12,7 @@ import {
 	SearchDialogIcon,
 	SearchDialogInput,
 	SearchDialogList,
-	SearchDialogOverlay,
-	type SharedProps
+	SearchDialogOverlay
 } from 'fumadocs-ui/components/dialog/search'
 import { useI18n } from 'fumadocs-ui/contexts/i18n'
 import { useAtom } from 'jotai'
@@ -39,7 +39,7 @@ export function CustomSearchDialog(props: SharedProps) {
 		setIsAIModalOpen(true)
 	}
 
-	const handleAIModelClose = () => {
+	const handleAIModalClose = () => {
 		setIsAIModalOpen(false)
 	}
 
@@ -56,10 +56,8 @@ export function CustomSearchDialog(props: SharedProps) {
 					<SearchDialogHeader>
 						<SearchDialogIcon />
 						<SearchDialogInput />
-
 						<SearchDialogClose className="hidden md:block" />
 					</SearchDialogHeader>
-
 					<SearchDialogList
 						items={query.data !== 'empty' ? query.data : null}
 					/>
