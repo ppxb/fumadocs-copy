@@ -4,6 +4,7 @@ import { GeistSans } from 'geist/font/sans'
 import type { ReactNode } from 'react'
 
 import { AnchorScroll } from '@/components/anchor-scroll-fix'
+import { CustomSearchDialog } from '@/components/search-dialog'
 import { ThemeProvider } from '@/components/theme-provider'
 import { baseUrl, createMetadata } from '@/lib/metadata'
 
@@ -47,12 +48,16 @@ export default function Layout({ children }: { children: ReactNode }) {
 				>
 					<RootProvider
 						theme={{ enableSystem: true, defaultTheme: 'dark' }}
-						search={{ enabled: true }}
+						search={{
+							enabled: true,
+							SearchDialog: process.env.ORAMA_PRIVATE_API_KEY
+								? CustomSearchDialog
+								: undefined
+						}}
 					>
 						<AnchorScroll />
 						{children}
 					</RootProvider>
-					{children}
 				</ThemeProvider>
 			</body>
 		</html>
