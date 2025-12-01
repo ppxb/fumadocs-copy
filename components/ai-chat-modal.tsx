@@ -2,10 +2,8 @@
 
 import { betterFetch } from '@better-fetch/fetch'
 import { atom } from 'jotai'
-import { AlertCircle, Bot } from 'lucide-react'
+import { AlertCircle, Bot, Send, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-
-// TODO: MESSAGES RENDER
 
 import {
 	Dialog,
@@ -14,6 +12,9 @@ import {
 	DialogHeader,
 	DialogTitle
 } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
+import { MarkdownRenderer } from './markdown-renderer'
 
 interface Message {
 	id: string
@@ -43,7 +44,7 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
 	const messagesEndRef = useRef<HTMLDivElement>(null)
 	const abortControllerRef = useRef<AbortController | null>(null)
 
-	function scrollToBottom() {
+	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
 	}
 
@@ -57,7 +58,7 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
 				abortControllerRef.current.abort()
 			}
 		}
-	})
+	}, [])
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -68,7 +69,7 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
 		}
 	}, [isOpen])
 
-	async function handleSubmit(e: React.FormEvent) {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (!input.trim() || isLoading) {
 			return
@@ -91,7 +92,7 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
 			role: 'assistant',
 			content: '',
 			timestamp: new Date(),
-			isStreaming: true
+			isStreaming: false
 		}
 
 		setMessages(prev => [...prev, thinkingMessage])
@@ -176,10 +177,10 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
 		}
 	}
 
-	async function simulateStreamingEffect(
+	const simulateStreamingEffect = async (
 		fullContent: string,
 		thinkingMessageId: string
-	) {
+	) => {
 		const assistantMessageId = (Date.now() + 1).toString()
 		let displayedContent = ''
 
@@ -240,6 +241,188 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
 						)}
 					</DialogDescription>
 				</DialogHeader>
+
+				<div className="flex-1 flex flex-col min-h-0">
+					<div
+						className={cn(
+							'flex-1 overflow-y-auto space-y-4 p-6',
+							messages.length === 0 ? 'overflow-y-hidden' : 'overflow-y-auto'
+						)}
+					>
+						{messages.length === 0 ? (
+							<div className="flex h-full flex-col items-center justify-center text-center">
+								<div className="mb-6">
+									<div className="w-16 h-16 mx-auto bg-transparent border border-input/70 border-dashed rounded-none flex items-center justify-center mb-4">
+										<Bot className="h-8 w-8 text-primary" />
+									</div>
+								</div>
+
+								<div className="mb-8 max-w-md">
+									<h3 className="text-xl font-semibold text-foreground mb-2">
+										Ask About Better Auth
+									</h3>
+									<p className="text-muted-foreground text-sm leading-relaxed">
+										I'm here to help you with Better Auth questions, setup
+										guides, and implementation tips. Ask me anything!
+									</p>
+								</div>
+
+								<div className="w-full max-w-lg">
+									<p className="text-sm font-medium text-foreground mb-4">
+										Try asking:
+									</p>
+									<div className="space-y-3">
+										{[
+											'How do I set up SSO with Google?',
+											'How to integrate Better Auth with NextJs?',
+											'How to setup Two Factor Authentication?'
+										].map((question, index) => (
+											<button
+												key={index}
+												onClick={() => setInput(question)}
+												className="w-full text-left p-3 rounded-none border border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 group"
+											>
+												<div className="flex items-center gap-3">
+													<div className="w-6 h-6 rounded-none bg-transparent border border-input/70 border-dashed flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+														<span className="text-xs text-primary font-medium">
+															{index + 1}
+														</span>
+													</div>
+													<span className="text-sm text-foreground group-hover:text-primary transition-colors">
+														{question}
+													</span>
+												</div>
+											</button>
+										))}
+									</div>
+								</div>
+							</div>
+						) : (
+							messages.map(message => (
+								<div
+									key={message.id}
+									className={cn(
+										'flex gap-3',
+										message.role === 'user' ? 'justify-end' : 'justify-start'
+									)}
+								>
+									{message.role === 'assistant' && (
+										<div className="shrink-0">
+											<div className="w-8 h-8 rounded-full bg-transparent border border-input/70 border-dashed flex items-center justify-center">
+												<Bot className="h-4 w-4 text-primary" />
+											</div>
+										</div>
+									)}
+									<div
+										className={cn(
+											'max-w-[80%] rounded-xl px-4 py-3 shadow-sm',
+											message.role === 'user'
+												? 'bg-primary text-primary-foreground'
+												: 'bg-background border border-border/50'
+										)}
+									>
+										{message.role === 'assistant' ? (
+											<div className="w-full">
+												{message.id.startsWith('thinking-') ? (
+													<div className="flex items-center gap-2 text-sm text-muted-foreground">
+														<div className="flex space-x-1">
+															<div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+															<div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+															<div className="w-1 h-1 bg-primary rounded-full animate-bounce"></div>
+														</div>
+														<span>Thinking...</span>
+													</div>
+												) : (
+													<>
+														<MarkdownRenderer content={message.content} />
+														{message.isStreaming && (
+															<div className="inline-block w-2 h-4 bg-primary streaming-cursor ml-1" />
+														)}
+													</>
+												)}
+											</div>
+										) : (
+											<p className="text-sm">{message.content}</p>
+										)}
+									</div>
+									{message.role === 'user' && (
+										<div className="shrink-0">
+											<div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+												<User className="h-4 w-4" />
+											</div>
+										</div>
+									)}
+								</div>
+							))
+						)}
+						<div ref={messagesEndRef} />
+					</div>
+
+					<div className="border-t px-0 bg-background/50 backdrop-blur-sm p-4">
+						<div className="relative max-w-4xl mx-auto">
+							<div
+								className={cn(
+									'relative flex flex-col border-input rounded-lg transition-all duration-200 w-full text-left',
+									'ring-1 ring-border/20 bg-muted/30 border-input border backdrop-blur-sm',
+									'focus-within:ring-primary/30 focus-within:bg-muted/[35%]'
+								)}
+							>
+								<div className="overflow-y-auto max-h-[200px]">
+									<Textarea
+										value={input}
+										onChange={e => setInput(e.target.value)}
+										placeholder="Ask a question about Better-Auth..."
+										className="w-full rounded-none rounded-b-none px-4 py-3 h-[70px] bg-transparent border-none text-foreground placeholder:text-muted-foreground resize-none focus-visible:ring-0 leading-[1.2] min-h-[52px] max-h-32"
+										disabled={isLoading}
+										onKeyDown={e => {
+											if (e.key === 'Enter' && !e.shiftKey) {
+												e.preventDefault()
+												void handleSubmit(e)
+											}
+										}}
+									/>
+								</div>
+
+								<div className="h-12 bg-muted/20 rounded-b-xl flex items-center justify-end px-3">
+									<button
+										type="submit"
+										onClick={e => {
+											e.preventDefault()
+											void handleSubmit(e)
+										}}
+										disabled={!input.trim() || isLoading}
+										className={cn(
+											'rounded-lg p-2 transition-all duration-200',
+											input.trim() && !isLoading
+												? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md'
+												: 'bg-muted/50 text-muted-foreground cursor-not-allowed'
+										)}
+									>
+										{isLoading ? (
+											<div className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin" />
+										) : (
+											<Send className="h-4 w-4" />
+										)}
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<div className="mt-3 text-center">
+							<p className="text-xs text-muted-foreground">
+								Press{' '}
+								<kbd className="px-1.5 py-0.5 text-xs bg-muted rounded">
+									Enter
+								</kbd>{' '}
+								to send,{' '}
+								<kbd className="px-1.5 py-0.5 text-xs bg-muted rounded">
+									Shift+Enter
+								</kbd>{' '}
+								for new line
+							</p>
+						</div>
+					</div>
+				</div>
 			</DialogContent>
 		</Dialog>
 	)
