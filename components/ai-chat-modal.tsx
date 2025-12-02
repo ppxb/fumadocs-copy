@@ -364,7 +364,7 @@ export function AIChatModal({ isOpen, onClose }: AIChatModalProps) {
 								className={cn(
 									'relative flex flex-col border-input rounded-lg transition-all duration-200 w-full text-left',
 									'ring-1 ring-border/20 bg-muted/30 border-input border backdrop-blur-sm',
-									'focus-within:ring-primary/30 focus-within:bg-muted/[35%]'
+									'focus-within:ring-primary/30 focus-within:bg-muted/35'
 								)}
 							>
 								<div className="overflow-y-auto max-h-[200px]">
